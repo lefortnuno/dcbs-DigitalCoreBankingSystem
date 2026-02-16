@@ -116,4 +116,9 @@ docker rm -f $(docker ps -aq) # supprime tous les conteneurs
 docker logs user-doc
 
 # teste ddos
+
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+
+# log jenkins
+
+docker logs jenkins
