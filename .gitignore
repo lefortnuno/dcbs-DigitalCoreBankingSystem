@@ -1,0 +1,41 @@
+# Ignorer tout
+** 
+
+# Sauf ces fichiers
+!.gitignore  
+!README.md 
+!launch_microservices.bat 
+!docker-compose.yml
+
+!config-service/
+!config-service/**
+!ms-gateway/
+!ms-gateway/**
+!ms-discovery/
+!ms-discovery/**
+
+!user-service/
+!user-service/**
+# !ai-service/
+# !ai-service/**
+!account-service/
+!account-service/**
+!transaction-service/
+!transaction-service/**
+
+# !casuel-service/
+# !casuel-service/**
+# !charge-service/
+# !charge-service/**
+# !depense-service/
+# !depense-service/**
+# !revenu-service/
+# !revenu-service/**
+ 
+!frontend/
+!frontend/**
+
+**/target/
+**/ai-service/src/main/resources/application.properties
+**/package-lock.json
+**/node_modules/

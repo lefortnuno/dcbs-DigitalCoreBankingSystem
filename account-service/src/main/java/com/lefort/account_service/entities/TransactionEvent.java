@@ -1,0 +1,17 @@
+package com.lefort.account_service.entities;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class TransactionEvent {
+    private Long transactionId;
+    private Long senderAccountId;
+    private Long receiverAccountId;
+    private Long amount;
+    private String etat;
+    private String typeV; 
+}
