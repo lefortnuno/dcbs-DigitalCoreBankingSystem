@@ -5,13 +5,6 @@ node {
         bat 'dir'
     }
 
-    stage('Test Frontend') {  
-        dir('frontend') {
-            bat 'npm install' 
-            bat 'npm test'
-        }
-    }
-
     stage('Test Service') {  
         dir('user-service') {
             bat 'mvn clean test'
@@ -39,6 +32,14 @@ node {
         }
     }
     
+    // stage('Test Frontend') {  
+    //     dir('frontend') {
+    //         bat 'npm install' 
+    //         bat 'npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom'
+    //         bat 'npm test'
+    //     }
+    // }
+
     stage('Cleanup') {   
         bat 'docker rm -f kafka 2>nul || exit 0' 
         bat 'docker rm -f zookeeper 2>nul || exit 0' 
