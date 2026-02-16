@@ -5,6 +5,12 @@ node {
         bat 'dir'
     }
 
+    stage('Test Frontend') {  
+        dir('frontend') {
+            bat 'npm test'
+        }
+    }
+
     stage('Test Service') {  
         dir('user-service') {
             bat 'mvn clean test'
@@ -55,7 +61,9 @@ node {
 
     stage('Test') {   
         bat 'docker ps'  
-        // bat 'curl http://localhost:7001/actuator/health'
+        sleep 5
+        
+        bat 'curl http://localhost:7001/actuator/health'
     }
  
 }

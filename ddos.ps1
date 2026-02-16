@@ -51,5 +51,5 @@ while ($jobs.State -contains "Running") {
 
 $jobs | Remove-Job
 
-Write-Host "Transactions envoyees"
+Write-Host "30 Transactions envoyees"
 Write-Host "Resultats enregistres dans resultats.txt"
