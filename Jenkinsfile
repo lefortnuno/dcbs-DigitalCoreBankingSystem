@@ -1,8 +1,6 @@
 node {
 
-    stage('Clone') {  
-        bat 'rmdir /s /q dcbs-DigitalCoreBankingSystem'
-        bat 'rmdir /s /q dockerCompo'
+    stage('Clone') {   
         checkout scm 
         bat 'dir'
     }
