@@ -6,6 +6,7 @@
 !README.md 
 !launch_microservices.bat 
 !docker-compose.yml
+!ddos.ps1
 
 !config-service/
 !config-service/**
@@ -15,22 +16,11 @@
 !ms-discovery/**
 
 !user-service/
-!user-service/**
-# !ai-service/
-# !ai-service/**
+!user-service/** 
 !account-service/
 !account-service/**
 !transaction-service/
 !transaction-service/**
-
-# !casuel-service/
-# !casuel-service/**
-# !charge-service/
-# !charge-service/**
-# !depense-service/
-# !depense-service/**
-# !revenu-service/
-# !revenu-service/**
  
 !frontend/
 !frontend/**

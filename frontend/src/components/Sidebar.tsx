@@ -1,6 +1,5 @@
 import {
-  LayoutDashboard,
-  CreditCard,
+  LayoutDashboard, 
   Repeat,
   LogOut,
   Clock,

@@ -12,7 +12,7 @@ import com.lefort.transaction_service.modele.Account;
 public class Transaction {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idTransaction;
-    private Long amount;
+    private Double amount;
     private LocalDateTime created_at; 
     private LocalDateTime updated_at; 
     private String etat;

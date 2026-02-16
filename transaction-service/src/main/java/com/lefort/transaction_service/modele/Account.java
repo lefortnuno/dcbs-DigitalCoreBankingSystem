@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 public class Account {
     private Long idAccount; 
     private String typeCompte;
-    private Long balance;  
+    private Double balance;  
     private Boolean status;
     private String userId;
     private String username;

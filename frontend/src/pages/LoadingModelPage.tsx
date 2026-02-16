@@ -5,6 +5,7 @@ export const LoadingModelPage = () => {
   const accRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const accountsRef = useRef<HTMLDivElement>(null);
+  const accountsAllRef = useRef<HTMLDivElement>(null);
   const transactionVireRef = useRef<HTMLDivElement>(null);
   const transactionDepotRef = useRef<HTMLDivElement>(null);
   const transactionRetraitRef = useRef<HTMLDivElement>(null);
@@ -12,7 +13,8 @@ export const LoadingModelPage = () => {
   const paramsRef = useRef<HTMLDivElement>(null);
   
   const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
-     //
+     console.log(ref);
+     
   };
   
   return (
@@ -21,6 +23,7 @@ export const LoadingModelPage = () => {
       accRef={accRef}
       profileRef={profileRef}
       accountsRef={accountsRef}
+      accountsAllRef={accountsAllRef}
       transactionVireRef={transactionVireRef}
       transactionDepotRef={transactionDepotRef}
       transactionRetraitRef={transactionRetraitRef}

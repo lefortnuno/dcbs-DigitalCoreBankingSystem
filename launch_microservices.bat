@@ -11,22 +11,22 @@ echo ========================================
 echo  Lancement de Docker (Kafka, Zookeeper...)
 echo ========================================
 
-@REM docker compose down -v
-@REM docker compose build --no-cache
-@REM docker compose up -d
+docker compose down -v
+docker compose build --no-cache
+docker compose up -d
 
-@REM echo Attente du démarrage de Kafka...
-@REM timeout /t 15 /nobreak > nul
+echo Attente du démarrage de Kafka...
+timeout /t 15 /nobreak > nul
 
-@REM echo Création des topics Kafka...
+echo Création des topics Kafka...
 
-@REM docker exec kafka kafka-topics --create --if-not-exists --topic user.created --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
-@REM timeout /t 5 /nobreak > nul
+docker exec kafka kafka-topics --create --if-not-exists --topic user.created --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+timeout /t 5 /nobreak > nul
 
-@REM docker exec kafka kafka-topics --create --if-not-exists --topic transaction.event --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
-@REM timeout /t 5 /nobreak > nul
+docker exec kafka kafka-topics --create --if-not-exists --topic transaction.event --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+timeout /t 5 /nobreak > nul
 
-@REM docker exec kafka kafka-topics --create --if-not-exists --topic transaction.acc.response --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+docker exec kafka kafka-topics --create --if-not-exists --topic transaction.acc.response --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
 
 echo Kafka prêt.
 echo.
@@ -61,24 +61,24 @@ dir *.log /b
 echo.
 
 
-@REM echo ========================================
-@REM echo  Lancement du frontend React
-@REM echo ========================================
-@REM if exist "frontend\package.json" (
-@REM     start "frontend" cmd /c "cd /d frontend && npm run dev"
-@REM     echo ✓ Frontend en cours d'exécution (Fenêtre séparée)
-@REM ) else (
-@REM     echo ✗ Aucun frontend trouvé dans /frontend
-@REM )
+echo ========================================
+echo  Lancement du frontend React
+echo ========================================
+if exist "frontend\package.json" (
+    start "frontend" cmd /c "cd /d frontend && npm run dev"
+    echo ✓ Frontend en cours d'exécution (Fenêtre séparée)
+) else (
+    echo ✗ Aucun frontend trouvé dans /frontend
+)
 
-@REM echo.
-@REM echo Logs frontend :
-@REM if exist "..\frontend.log" (
-@REM     echo frontend.log
-@REM ) else (
-@REM     echo Aucun fichier frontend.log trouvé
-@REM )
-@REM echo.
+echo.
+echo Logs frontend :
+if exist "..\frontend.log" (
+    echo frontend.log
+) else (
+    echo Aucun fichier frontend.log trouvé
+)
+echo.
 
 
 echo ========================================
@@ -91,7 +91,7 @@ pause >nul
 echo Arrêt de tous les micro-services...
 taskkill /F /T /IM mvn.cmd >nul 2>&1
 taskkill /F /T /IM java.exe >nul 2>&1
-@REM taskkill /F /T /IM node.exe >nul 2>&1
+taskkill /F /T /IM node.exe >nul 2>&1
 
 echo Tous les services sont arrêtés.
 timeout /t 2 >nul

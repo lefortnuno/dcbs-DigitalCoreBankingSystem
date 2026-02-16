@@ -13,7 +13,7 @@ public class Account {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idAccount;
     private String typeCompte;
-    private Long balance; 
+    private Double balance; 
     private LocalDateTime created_at; 
     private LocalDateTime updated_at; 
     private Boolean status;

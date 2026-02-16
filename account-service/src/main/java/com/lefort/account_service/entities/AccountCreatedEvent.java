@@ -11,5 +11,5 @@ public class AccountCreatedEvent {
     private Long accountId;
     private String userId; 
     private String typeCompte;
-    private Long balance; 
+    private Double balance; 
 }

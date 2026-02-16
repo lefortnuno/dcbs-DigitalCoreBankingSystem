@@ -45,7 +45,7 @@ public class AccountEventConsumer {
                 .orElseThrow(() ->
                         new RuntimeException("Compte receveur introuvable"));
 
-        Long amount = event.getAmount();
+        Double amount = event.getAmount();
         String typeV = event.getTypeV(); 
 
         if ("retrait".equals(typeV)) { 
@@ -97,13 +97,13 @@ public class AccountEventConsumer {
 
         Account autoNewAccountEpargne = new Account();
         autoNewAccountEpargne.setUserId(event.getUserId());  
-        autoNewAccountEpargne.setBalance(100L); 
+        autoNewAccountEpargne.setBalance(100.00); 
         autoNewAccountEpargne.setTypeCompte("Epargne"); 
         accountRepository.save(autoNewAccountEpargne);
 
         Account autoNewAccount = new Account();
         autoNewAccount.setUserId(event.getUserId());  
-        autoNewAccount.setBalance(900L);  
+        autoNewAccount.setBalance(900.00);  
         autoNewAccount.setTypeCompte("Courant"); 
         accountRepository.save(autoNewAccount);
 

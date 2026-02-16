@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Account, Transaction } from "../types";
 import apiService from "../services/api.service";
-import { LoadingPage } from "./LoadingPage";
 import { DashboardLayout } from "./DashboardLayout";
 import { LoadingModelPage } from "./LoadingModelPage";
 import { useAuth } from "../hooks/useAuth";
@@ -14,8 +13,8 @@ export const ProfilePage = () => {
   const [transactionStatus, setTransactionStatus] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const [senderId, setSenderId] = useState<number>();
-  const [receiverId, setReceiverId] = useState<number>();
+  const [senderId, setSenderId] = useState<number | "">("");
+  const [receiverId, setReceiverId] = useState<number | "">("");
   const [amount, setAmount] = useState<number>(0);
   const [typeV, setTypeV] = useState<string>("virement");
   const [typeC, setTypeC] = useState<string>("mesComptes");
@@ -105,12 +104,57 @@ export const ProfilePage = () => {
       setAccounts(accountsData);
       setAccountsAll(accountsDataAll);
       setTransactions(transactionsData);
+      setLoading(false);
     } catch (err: any) {
       if (err.response && err.response.data) {
         console.log("er er === ", err.response.data.message);
       } else {
         console.log("Erreur inconnue");
       }
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadNewTransactionDataNoUselessRefresh();
+    }, 5500);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const loadNewTransactionDataNoUselessRefresh = async () => {
+    try {
+      const accountsData = await apiService.getMyAccounts(user?.idUser);
+      const accountsDataAll = await apiService.getAccounts();
+
+      const accountIds = accountsData.map(
+        (account: Account) => account.idAccount,
+      );
+
+      const transactionsData =
+        await apiService.getAllMyTransactions(accountIds);
+
+      // update seulement si différent
+      setAccounts((prev) =>
+        JSON.stringify(prev) !== JSON.stringify(accountsData)
+          ? accountsData
+          : prev,
+      );
+
+      setAccountsAll((prev) =>
+        JSON.stringify(prev) !== JSON.stringify(accountsDataAll)
+          ? accountsDataAll
+          : prev,
+      );
+
+      setTransactions((prev) =>
+        JSON.stringify(prev) !== JSON.stringify(transactionsData)
+          ? transactionsData
+          : prev,
+      );
+      setLoading(false);
+    } catch (err: any) {
+      console.log(err?.response?.data?.message || "Erreur inconnue");
     }
   };
 
@@ -133,13 +177,14 @@ export const ProfilePage = () => {
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
     try {
-      await apiService.doTransaction(senderId, receiverId, amount, typeV);
-      setAmount(0);
-      loadNewTransactionData();
+      await apiService.doTransaction(
+        Number(senderId),
+        Number(receiverId),
+        amount,
+        typeV,
+      );
 
       handleReset();
-      setTypeV("virement");
-
       setPendingScroll(transactionVireRef);
       setTransactionStatus("✅ Transaction effectuée avec succès !");
 
@@ -149,8 +194,14 @@ export const ProfilePage = () => {
       }, 3000);
     } catch (error: any) {
       console.error(error);
-      console.log("errr===", error);
-      setTransactionStatus("❌ Erreur lors de la transaction: ");
+      console.log("error= ", error);
+
+      const backendMessage =
+        error?.message || "Erreur lors de la transaction";
+
+      setTransactionStatus(
+        `❌ ${backendMessage}`,
+      );
     }
   };
 
@@ -173,10 +224,9 @@ export const ProfilePage = () => {
       year: "numeric",
     })}`;
   };
-
   const handleReset = () => {
-    setSenderId(undefined);
-    setReceiverId(undefined);
+    setSenderId("");
+    setReceiverId("");
     setAmount(0);
   };
 
@@ -349,9 +399,12 @@ export const ProfilePage = () => {
             </div>
           </div>
         )}
-        
+
         {typeC === "toutComptes" && (
-          <div ref={accountsAllRef} className="bg-white shadow-xl rounded-2xl p-8">
+          <div
+            ref={accountsAllRef}
+            className="bg-white shadow-xl rounded-2xl p-8"
+          >
             <div className="flex items-center mb-6">
               <div className="bg-green-100 rounded-lg p-2 mr-3">
                 <svg
@@ -436,7 +489,11 @@ export const ProfilePage = () => {
               <select
                 className="border-2 border-gray-300 rounded-lg p-3 focus:border-blue-500 focus:outline-none transition"
                 value={senderId}
-                onChange={(e) => setSenderId(Number(e.target.value))}
+                onChange={(e) =>
+                  setSenderId(
+                    e.target.value === "" ? "" : Number(e.target.value),
+                  )
+                }
               >
                 <option value="">Compte émetteur</option>
                 {accounts
@@ -452,7 +509,11 @@ export const ProfilePage = () => {
               <select
                 className="border-2 border-gray-300 rounded-lg p-3 focus:border-blue-500 focus:outline-none transition"
                 value={receiverId}
-                onChange={(e) => setReceiverId(Number(e.target.value))}
+                onChange={(e) =>
+                  setReceiverId(
+                    e.target.value === "" ? "" : Number(e.target.value),
+                  )
+                }
               >
                 <option value="">Compte receveur</option>
                 {accountsAll
@@ -531,8 +592,10 @@ export const ProfilePage = () => {
                 className="border-2 border-gray-300 rounded-lg p-3 focus:border-blue-500 focus:outline-none transition"
                 value={receiverId}
                 onChange={(e) => {
-                  setSenderId(Number(e.target.value));
-                  setReceiverId(Number(e.target.value));
+                  const value =
+                    e.target.value === "" ? "" : Number(e.target.value);
+                  setSenderId(value);
+                  setReceiverId(value);
                   setTypeV("dépôt");
                 }}
               >
@@ -613,8 +676,10 @@ export const ProfilePage = () => {
                 className="border-2 border-gray-300 rounded-lg p-3 focus:border-blue-500 focus:outline-none transition"
                 value={receiverId}
                 onChange={(e) => {
-                  setSenderId(Number(e.target.value));
-                  setReceiverId(Number(e.target.value));
+                  const value =
+                    e.target.value === "" ? "" : Number(e.target.value);
+                  setSenderId(value);
+                  setReceiverId(value);
                   setTypeV("retrait");
                 }}
               >

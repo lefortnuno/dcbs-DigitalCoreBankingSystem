@@ -18,7 +18,7 @@ class ApiService {
 
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {},
+    options: RequestInit = {}
   ): Promise<T> {
     const headers: HeadersInit = {
       "Content-Type": "application/json",
@@ -31,11 +31,27 @@ class ApiService {
       headers,
     });
 
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status}`);
+    let data: any = null;
+
+    // On essaie de parser le JSON proprement
+    try {
+      const text = await response.text();
+      data = text ? JSON.parse(text) : null;
+    } catch {
+      data = null;
     }
 
-    return response.json();
+    // 🔥 Gestion propre des erreurs backend
+    if (!response.ok) {
+      const backendMessage =
+        data?.message ||
+        data?.error ||
+        `Erreur ${response.status}`;
+
+      throw new Error(backendMessage);
+    }
+
+    return data as T;
   }
 
   async getUsers(): Promise<User[]> {
@@ -47,23 +63,30 @@ class ApiService {
   }
 
   async getMyAccounts(uID: any): Promise<Account[]> {
-    return this.request<Account[]>(`/account-service/accounts/myAccount?u1=${uID}`);
+    return this.request<Account[]>(
+      `/account-service/accounts/myAccount?u1=${uID}`
+    );
   }
 
   async getTransactions(): Promise<Transaction[]> {
-    return this.request<Transaction[]>("/transaction-service/transactions");
+    return this.request<Transaction[]>(
+      "/transaction-service/transactions"
+    );
   }
- 
-  async getAllMyTransactions(accountIds: number[]): Promise<Transaction[]> {
-  const query = accountIds.join(",");
 
-  return this.request<Transaction[]>(
-    `/transaction-service/transactions/AllMyTrans?ids=${query}`
-  );
-}
+  async getAllMyTransactions(
+    accountIds: number[]
+  ): Promise<Transaction[]> {
+    const query = accountIds.join(",");
 
- 
-  async ensureUser(user: Pick<User, "idUser" | "username">): Promise<User> { 
+    return this.request<Transaction[]>(
+      `/transaction-service/transactions/AllMyTrans?ids=${query}`
+    );
+  }
+
+  async ensureUser(
+    user: Pick<User, "idUser" | "username">
+  ): Promise<User> {
     return this.request<User>("/user-service/users/ensure", {
       method: "POST",
       body: JSON.stringify(user),
@@ -72,10 +95,10 @@ class ApiService {
 
   async getTransactionsWith(
     accountId: number,
-    accountId2: number,
+    accountId2: number
   ): Promise<Transaction[]> {
     return this.request<Transaction[]>(
-      `/transaction-service/transactions/trans?u1=${accountId}&u2=${accountId2}`,
+      `/transaction-service/transactions/trans?u1=${accountId}&u2=${accountId2}`
     );
   }
 
@@ -83,18 +106,21 @@ class ApiService {
     senderAccountId: number,
     receiverAccountId: number,
     amount: number,
-    typeV: string,
+    typeV: string
   ): Promise<Transaction> {
-    return this.request<Transaction>("/transaction-service/transactions", {
-      method: "POST",
-      body: JSON.stringify({
-        senderAccountId,
-        receiverAccountId,
-        amount,
-        typeV,
-        created_at: new Date().toISOString(),
-      }),
-    });
+    return this.request<Transaction>(
+      "/transaction-service/transactions",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          senderAccountId,
+          receiverAccountId,
+          amount,
+          typeV,
+          created_at: new Date().toISOString(),
+        }),
+      }
+    );
   }
 }
 

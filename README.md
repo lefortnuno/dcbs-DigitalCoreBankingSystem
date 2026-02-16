@@ -81,13 +81,13 @@ mvn clean install -DskipTests
 cd ../ms-gateway
 mvn clean install -DskipTests
 
-cd ../chat-service
-mvn clean install -DskipTests
-
 cd ../user-service
 mvn clean install -DskipTests
 
-cd ../ai-service
+cd ../account-service
+mvn clean install -DskipTests
+
+cd ../transaction-service
 mvn clean install -DskipTests
 
 cd ..
@@ -114,3 +114,6 @@ docker rm -f $(docker ps -aq) # supprime tous les conteneurs
 ## logs
 
 docker logs user-doc
+
+# teste ddos
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass

@@ -11,7 +11,7 @@ public class TransactionCreatedEvent {
     private Long transactionId;
     private Long senderAccountId;
     private Long receiverAccountId;
-    private Long amount;
+    private Double amount;
     private String etat;
     private String typeV;
 }
