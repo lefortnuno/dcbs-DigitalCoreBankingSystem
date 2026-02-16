@@ -6,6 +6,7 @@
 !README.md 
 !launch_microservices.bat 
 !docker-compose.yml
+!user.ps1
 !ddos.ps1
 !Jenkinsfile
 

@@ -1,35 +1,33 @@
-$outputFile = "ddos.txt"
+$outputFile = "resultats.txt"
 Remove-Item $outputFile -ErrorAction SilentlyContinue
 
 $jobs = @()
 
-1..5 | ForEach-Object {
+1..1 | ForEach-Object {
 
-    $amount = $_
+    $nbr = $_
 
     $jobs += Start-Job -ScriptBlock {
-        param($amount)
+        param($nbr)
 
         try {
             $body = @{
-                senderAccountId   = 2
-                receiverAccountId = 1
-                amount            = $amount*$amount
-                typeV             = "virement"
+                idUser   = "user-001"
+                username = "admin" 
             } | ConvertTo-Json
 
-            $response = Invoke-RestMethod -Uri "http://localhost:7003/transactions" `
+            $response = Invoke-RestMethod -Uri "http://localhost:7001/users" `
                 -Method POST `
                 -ContentType "application/json" `
                 -Body $body
 
-            "SUCCESS - Amount: $amount - Response: $($response | ConvertTo-Json -Compress)"
+            "SUCCESS - User: $nbr - Response: $($response | ConvertTo-Json -Compress)"
         }
         catch {
-            "ERROR - Amount: $amount - Message: $($_.Exception.Message)"
+            "ERROR - User: $nbr - Message: $($_.Exception.Message)"
         }
 
-    } -ArgumentList $amount
+    } -ArgumentList $nbr
 }
 
 while ($jobs.State -contains "Running") {
@@ -38,12 +36,8 @@ while ($jobs.State -contains "Running") {
 
         $results = Receive-Job $job
 
-        foreach ($result in $results) {
-
-            # ✅ Affichage temps réel
-            Write-Host $result
-
-            # ✅ Écriture fichier
+        foreach ($result in $results) { 
+            Write-Host $result 
             Add-Content -Path $outputFile -Value $result
         }
     }
@@ -62,5 +56,5 @@ foreach ($job in $jobs) {
 
 $jobs | Remove-Job
 
-Write-Host "05 Transactions envoyees"
-Write-Host "Resultats enregistres dans ddos.txt"
+Write-Host "01 Utilisateur crée"
+Write-Host "Resultats enregistres dans resultats.txt"

@@ -118,6 +118,7 @@ docker logs user-doc
 # teste ddos
 
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\ddos.ps1
 
 # log jenkins
 
