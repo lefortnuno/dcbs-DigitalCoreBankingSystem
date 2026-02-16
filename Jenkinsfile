@@ -7,8 +7,7 @@ node {
 
     stage('Test Frontend') {  
         dir('frontend') {
-            bat 'npm install'
-            // bat 'npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom'
+            bat 'npm install' 
             bat 'npm test'
         }
     }
@@ -61,12 +60,11 @@ node {
         sleep 10
     }
 
-    stage('Test') {   
+    stage('Post-Running') {   
         bat 'docker ps'  
         sleep 5
 
         bat 'curl http://localhost:7001/actuator/health'
-        // est ce que je peux lancer ddops.ps1 ici ?
         
         // Exécution du script PowerShell
         bat 'powershell -ExecutionPolicy Bypass -File ddos.ps1'

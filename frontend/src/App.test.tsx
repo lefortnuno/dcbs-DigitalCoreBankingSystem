@@ -13,7 +13,6 @@ describe("App", () => {
         </AuthProvider>
       </BrowserRouter>,
     );
+    expect(document.body).toBeInTheDocument();
   });
-  
-  expect(document.body).toBeInTheDocument();
 });
