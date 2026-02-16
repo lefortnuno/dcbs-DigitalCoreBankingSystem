@@ -7,6 +7,7 @@
 !launch_microservices.bat 
 !docker-compose.yml
 !ddos.ps1
+!Jenkinsfile
 
 !config-service/
 !config-service/**

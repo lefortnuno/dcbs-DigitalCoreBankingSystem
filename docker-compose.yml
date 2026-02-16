@@ -21,16 +21,6 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
-  jenkins:
-    image: jenkins/jenkins:lts
-    container_name: jenkins-doc
-    ports:
-      - "8081:8080" 
-      - "50000:50000"
-    volumes:
-      - jenkins_data:/var/jenkins_home
-      - ./jenkins:/var/jenkins_config
-
   ms-discovery:
     build: ./ms-discovery
     container_name: discovery-doc
@@ -155,7 +145,3 @@ services:
     container_name: react-doc
     ports:
     - "5173:80"
-
-volumes:
-  jenkins_data:
-    driver: local 
