@@ -8,6 +8,12 @@ node {
     stage('Test Service') {  
         dir('user-service') {
             bat 'mvn clean test'
+        } 
+        dir('account-service') {
+            bat 'mvn clean test'
+        } 
+        dir('transaction-service') {
+            bat 'mvn clean test'
         }
     }
 
@@ -57,7 +63,7 @@ node {
 
     stage('Run Containers') {      
         bat 'docker compose up -d'
-        sleep 25
+        sleep 35
     }
     
     stage('Post Running') {   
@@ -98,13 +104,29 @@ node {
         bat 'curl http://localhost:7003/transactions'
     }
 
-    stage('Fin') { 
-        echo 'Pipeline termine avec succes.'
-        echo 'Tous les services sont deployes et operationnels.'
-        echo 'Veuillez demarrer votre container Keycloak pour activer l authentification.'
-        echo 'Vous pouvez maintenant profiter pleinement de l application.'
-        echo ''
-        echo '— Trofel Nuno'
+    stage('Owarii') {
+            echo """
+        ===================[ DCBS - DÉPLOIEMENT RÉUSSI ]===================
+
+            >>> ÉTAT DU SYSTÈME :
+                - Pipeline exécuté avec succès
+                - Microservices opérationnels
+                - Frontend déployé et accessible
+
+            >>> PROCHAINES ÉTAPES :
+                - Démarrer le conteneur Keycloak pour activer l'authentification
+                - Accéder à l'application pour valider les fonctionnalités
+
+            >>> ACCÈS APPLICATION :
+                - Frontend : http://localhost:5173
+                - Service Discovery (Eureka) : http://localhost:8761
+                - API Gateway : http://localhost:8085
+
+        =================== [ SYSTÈME PRÊT POUR LA PRODUCTION ] ===================
+
+            --- Trofel Nuno
+
+        ================================================================="""
     }
     
 }
