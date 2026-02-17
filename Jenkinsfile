@@ -45,23 +45,9 @@ node {
         }
     }
 
-    stage('Cleanup') {   
-        bat 'docker rm -f kafka 2>nul || exit 0' 
-        bat 'docker rm -f zookeeper 2>nul || exit 0' 
-        bat 'docker rm -f discovery-doc 2>nul || exit 0' 
-        bat 'docker rm -f config-doc 2>nul || exit 0' 
-        bat 'docker rm -f user-doc 2>nul || exit 0' 
-        bat 'docker rm -f account-doc 2>nul || exit 0' 
-        bat 'docker rm -f transaction-doc 2>nul || exit 0' 
-        bat 'docker rm -f gateway-doc 2>nul || exit 0' 
-        bat 'docker rm -f react-doc 2>nul || exit 0' 
-    }
-
-    stage('Build Image') {  
-        bat 'docker compose build --no-cache'
-    }
-
-    stage('Run Containers') {      
+    stage('Rebuild & Deploy Containers') {  
+        bat 'docker compose down -v'
+        bat 'docker compose build --no-cache'     
         bat 'docker compose up -d'
         sleep 35
     }
