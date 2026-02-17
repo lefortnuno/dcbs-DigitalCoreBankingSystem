@@ -128,8 +128,8 @@ services:
       start_period: 25s
     environment:
       - DISCOVERY_SERVICE_URL=http://discovery-doc:8761/eureka
-      - KEYCLOCK_SERVICE_URL=http://192.168.1.63:8080/realms/lefort-realm
-      - KEYCLOCK_SERVICE_JWT_URL=http://192.168.1.63:8080/realms/lefort-realm/protocol/openid-connect/certs
+      - KEYCLOCK_SERVICE_URL=http://192.168.0.168:8080/realms/lefort-realm
+      - KEYCLOCK_SERVICE_JWT_URL=http://192.168.0.168:8080/realms/lefort-realm/protocol/openid-connect/certs
     depends_on:
       transaction_service:
         condition: service_healthy
@@ -138,10 +138,10 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_MICRO_GATEWAY_URL: http://192.168.1.63:8085
-        VITE_KEYCLOAK_SERVER_URL: http://192.168.1.63:8080
+        VITE_MICRO_GATEWAY_URL: http://192.168.0.168:8085
+        VITE_KEYCLOAK_SERVER_URL: http://192.168.0.168:8080
         VITE_KEYCLOAK_REALM: lefort-realm
         VITE_KEYCLOAK_CLIENT_ID: frontend-react
     container_name: react-doc
     ports:
-    - "5173:80"
+      - "5173:80"
