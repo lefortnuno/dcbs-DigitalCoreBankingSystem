@@ -18,7 +18,7 @@ export const LoadingModelPage = () => {
   };
   
   return (
-    <DashboardLayout username="Inconnu" onLogout={() => {}} 
+    <DashboardLayout username="Inconnu"  
       scrollToSection={scrollToSection}
       accRef={accRef}
       profileRef={profileRef}

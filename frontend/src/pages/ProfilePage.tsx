@@ -4,14 +4,18 @@ import apiService from "../services/api.service";
 import { DashboardLayout } from "./DashboardLayout";
 import { LoadingModelPage } from "./LoadingModelPage";
 import { useAuth } from "../hooks/useAuth";
+import { Trash2 } from "lucide-react";
 
 export const ProfilePage = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [accountsAll, setAccountsAll] = useState<Account[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [transactionStatus, setTransactionStatus] = useState("");
   const [loading, setLoading] = useState(true);
+  const [deleteAccountId, setDeleteAccountId] = useState<number | null>(null);
+  const [deleteUserOpen, setDeleteUserOpen] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
 
   const [senderId, setSenderId] = useState<number | "">("");
   const [receiverId, setReceiverId] = useState<number | "">("");
@@ -196,23 +200,15 @@ export const ProfilePage = () => {
       console.error(error);
       console.log("error= ", error);
 
-      const backendMessage =
-        error?.message || "Erreur lors de la transaction";
+      const backendMessage = error?.message || "Erreur lors de la transaction";
 
-      setTransactionStatus(
-        `❌ ${backendMessage}`,
-      );
+      setTransactionStatus(`❌ ${backendMessage}`);
     }
   };
 
   const capitalizeUsername = (username: string | undefined) => {
     if (!username) return "";
     return username.charAt(0).toUpperCase() + username.slice(1).toLowerCase();
-  };
-
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.href = "/login";
   };
 
   const formatDateFR = (date?: string) => {
@@ -234,10 +230,48 @@ export const ProfilePage = () => {
     return <LoadingModelPage />;
   }
 
+  const handleDeleteAccount = async () => {
+    if (!deleteAccountId) return;
+
+    try {
+      setLoadingDelete(true);
+
+      await apiService.deleteAccount(deleteAccountId);
+
+      setAccounts((prev) =>
+        prev.filter((a) => a.idAccount !== deleteAccountId),
+      );
+      setAccountsAll((prev) =>
+        prev.filter((a) => a.idAccount !== deleteAccountId),
+      );
+
+      setDeleteAccountId(null);
+    } catch (error: any) {
+      alert(error?.message || "Erreur lors de la suppression du compte");
+    } finally {
+      setLoadingDelete(false);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (!user?.idUser) return;
+
+    try {
+      setLoadingDelete(true);
+
+      await apiService.deleteUser(user.idUser);
+
+      await logout();
+    } catch (error: any) {
+      alert(error?.message || "Erreur lors de la suppression utilisateur");
+    } finally {
+      setLoadingDelete(false);
+    }
+  };
+
   return (
     <DashboardLayout
       username={accounts[0]?.owner?.username}
-      onLogout={handleLogout}
       scrollToSection={scrollToSection}
       accRef={accRef}
       profileRef={profileRef}
@@ -337,7 +371,10 @@ export const ProfilePage = () => {
                 Changer Mot de Passe
               </button>
 
-              <button className="px-5 py-3 rounded-lg bg-red-100 text-red-600 font-semibold hover:bg-red-200 transition">
+              <button
+                className="px-5 py-3 rounded-lg bg-red-100 text-red-600 font-semibold hover:bg-red-200 transition"
+                onClick={() => setDeleteUserOpen(true)}
+              >
                 Supprimer Compte
               </button>
             </div>
@@ -390,10 +427,22 @@ export const ProfilePage = () => {
                   <p className="text-2xl font-bold text-blue-600 mb-2">
                     {account.balance.toFixed(2)} Dhs
                   </p>
-                  <p className="text-sm text-gray-600">
-                    Type:{" "}
-                    <span className="font-semibold">{account.typeCompte}</span>
-                  </p>
+
+                  <div className="flex justify-between items-start mb-3">
+                    <p className="text-sm text-gray-600">
+                      Type:{" "}
+                      <span className="font-semibold">
+                        {account.typeCompte}
+                      </span>
+                    </p>
+
+                    <button
+                      onClick={() => setDeleteAccountId(account.idAccount)}
+                      className="text-red-500 hover:text-red-700 transition"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -930,6 +979,70 @@ export const ProfilePage = () => {
           </div>
         )}
       </div>
+
+      {/* DELETE ACCOUNT MODAL */}
+      {deleteAccountId && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-[400px] shadow-lg">
+            <h2 className="text-lg font-bold mb-4 text-gray-800">
+              Confirmer la suppression
+            </h2>
+
+            <p className="text-sm text-gray-600 mb-6">
+              Voulez-vous vraiment supprimer ce compte ?
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setDeleteAccountId(null)}
+                className="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200"
+              >
+                Annuler
+              </button>
+
+              <button
+                onClick={handleDeleteAccount}
+                disabled={loadingDelete}
+                className="px-4 py-2 rounded bg-red-500 text-white hover:bg-red-600"
+              >
+                {loadingDelete ? "Suppression..." : "Supprimer"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE USER MODAL */}
+      {deleteUserOpen && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-[400px] shadow-lg">
+            <h2 className="text-lg font-bold mb-4 text-gray-800">
+              Suppression définitive
+            </h2>
+
+            <p className="text-sm text-gray-600 mb-6">
+              Cette action supprimera définitivement votre compte.
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setDeleteUserOpen(false)}
+                className="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200"
+              >
+                Annuler
+              </button>
+
+              <button
+                onClick={handleDeleteUser}
+                disabled={loadingDelete}
+                className="px-4 py-2 rounded bg-red-500 text-white hover:bg-red-600"
+              >
+                {loadingDelete ? "Suppression..." : "Supprimer"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 };

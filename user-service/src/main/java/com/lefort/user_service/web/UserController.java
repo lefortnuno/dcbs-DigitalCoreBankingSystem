@@ -36,4 +36,9 @@ public class UserController {
         System.out.println(" USER CONTROLLER : " + user);
         return userService.ensureUser(user);
     }
+ 
+    @DeleteMapping("/users/{id}")
+    public void deleteById(@PathVariable("id") String id) {
+        userService.deleteUser(id);
+    }
 }

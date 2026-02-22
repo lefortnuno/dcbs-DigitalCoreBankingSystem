@@ -25,6 +25,10 @@ public class UserService {
     public User findById(String id) {
         return userRepository.findById(id).orElseThrow();
     }
+ 
+    public void deleteUser(String id) {
+        userRepository.deleteById(id);
+    }
 
     public User createUser(User user) {
         // Sauvegarde DB
