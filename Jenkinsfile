@@ -45,11 +45,10 @@ node {
         }
     }
 
-    stage('Rebuild & Deploy Containers') {  
+    stage('Rebuild & Deploy Containers') {   
         bat 'docker compose down -v'
-        bat 'docker compose build --no-cache'     
-        bat 'docker compose up -d'
-        sleep 35
+        bat 'docker compose up -d --build'
+        sleep 40
     }
     
     stage('Post Running') {   
@@ -92,26 +91,16 @@ node {
 
     stage('Owarii') {
             echo """
-        ===================[ DCBS - DÉPLOIEMENT RÉUSSI ]===================
+        ===================[ DCBS - DÉPLOIEMENT RÉUSSI ]===================  
 
-            >>> ÉTAT DU SYSTÈME :
-                - Pipeline exécuté avec succès
-                - Microservices opérationnels
-                - Frontend déployé et accessible
+            >>> PREREQUIS :
+                - Démarrer le conteneur Keycloak pour activer l'authentification 
 
-            >>> PROCHAINES ÉTAPES :
-                - Démarrer le conteneur Keycloak pour activer l'authentification
-                - Accéder à l'application pour valider les fonctionnalités
-
-            >>> ACCÈS APPLICATION :
+            >>> ACCÈS :
                 - Frontend : http://localhost:5173
                 - Service Discovery (Eureka) : http://localhost:8761
                 - API Gateway : http://localhost:8085
-
-        =================== [ SYSTÈME PRÊT POUR LA PRODUCTION ] ===================
-
-            --- Trofel Nuno
-
+ 
         ================================================================="""
     }
     
