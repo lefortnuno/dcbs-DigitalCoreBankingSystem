@@ -74,8 +74,7 @@ public class AccountService {
 
         return enrichAccount(existing);
     }
-
-    // 🔹 DELETE
+ 
     public void deleteAccount(Long id) {
         accountRepository.deleteById(id);
     }

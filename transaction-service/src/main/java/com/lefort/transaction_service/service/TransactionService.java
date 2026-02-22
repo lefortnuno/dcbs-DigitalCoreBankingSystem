@@ -50,15 +50,42 @@ public class TransactionService {
     // ======================== GET BY ARRAY ID ========================
     public List<Transaction> getAllMyTransactions(List<Long> myAccountIds) {
 
-    List<Transaction> transactions =
-            transactionRepository
-                    .findBySenderAccountIdInOrReceiverAccountIdInOrderByIdTransactionDesc(
-                            myAccountIds,
-                            myAccountIds
-                    );
+        List<Transaction> transactions =
+                transactionRepository
+                        .findBySenderAccountIdInOrReceiverAccountIdInOrderByIdTransactionDesc(
+                                myAccountIds,
+                                myAccountIds
+                        );
 
     return enrichTransactions(transactions);
-}
+    
+    }
+
+    public List<Transaction> getAllMyTransactionsToDelete(List<Long> myAccountIds) {
+        List<Transaction> transactions =
+                transactionRepository
+                        .findBySenderAccountIdInOrReceiverAccountIdInOrderByIdTransactionDesc(
+                                myAccountIds,
+                                myAccountIds
+                        );
+
+        List<Transaction> listeTransactionAsupp = enrichTransactions(transactions); 
+        transactionRepository.deleteAll(listeTransactionAsupp);
+        
+        List<Transaction> remaining =
+                transactionRepository
+                        .findBySenderAccountIdInOrReceiverAccountIdInOrderByIdTransactionDesc(
+                                myAccountIds,
+                                myAccountIds
+                        );
+
+        if (remaining.isEmpty()) {
+            return List.of();  
+        }
+
+        return enrichTransactions(remaining); 
+    }
+
 
 
     // ======================== GET BY ID ========================

@@ -236,6 +236,7 @@ export const ProfilePage = () => {
     try {
       setLoadingDelete(true);
 
+      await apiService.getAllMyTransactionsToDelete([deleteAccountId]);
       await apiService.deleteAccount(deleteAccountId);
 
       setAccounts((prev) =>

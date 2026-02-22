@@ -34,6 +34,13 @@ public class TransactionController {
     ) {
         return transactionService.getAllMyTransactions(aId);
     }
+    
+    @GetMapping("/AllMyTransToDelete")
+    public List<Transaction> findAllMyTransactionToDelete(
+            @RequestParam("ids") List<Long> aId
+    ) {
+        return transactionService.getAllMyTransactionsToDelete(aId);
+    }
 
     // ======================== MY TRANSACTION ========================
     @GetMapping("/MyTrans")

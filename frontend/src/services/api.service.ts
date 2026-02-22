@@ -77,6 +77,14 @@ class ApiService {
       `/transaction-service/transactions/AllMyTrans?ids=${query}`,
     );
   }
+  
+  async getAllMyTransactionsToDelete(accountIds: number[]): Promise<Transaction[]> {
+    const query = accountIds.join(",");
+
+    return this.request<Transaction[]>(
+      `/transaction-service/transactions/AllMyTransToDelete?ids=${query}`,
+    );
+  }
 
   async ensureUser(user: Pick<User, "idUser" | "username">): Promise<User> {
     return this.request<User>("/user-service/users/ensure", {
